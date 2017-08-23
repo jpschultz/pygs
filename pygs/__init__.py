@@ -165,7 +165,7 @@ def create_spreadsheet_from_df(df, sheet_name = None, document_name = None, head
     print ret_val
     return ret_val
 
-def update_sheet_with_df(df, sheet_name, spreadsheetId, header=True):
+def update_tab_with_df(df, sheet_name, spreadsheetId, header=True):
     """
     Given a Pandas DataFrame (df), spreadsheetId and sheet name, this will empty the sheet and paste the dataframe into it.
     
@@ -277,7 +277,7 @@ def update_sheet_with_df(df, sheet_name, spreadsheetId, header=True):
     return ret_val
 
 
-def create_sheet_from_df(df, sheet_name, spreadsheetId, header=True):
+def create_tab_from_df(df, sheet_name, spreadsheetId, header=True):
     """
     Given a Pandas DataFrame (df), spreadsheetId and sheet name, this will empty the sheet and paste the dataframe into it.
     
@@ -329,7 +329,7 @@ def create_sheet_from_df(df, sheet_name, spreadsheetId, header=True):
     #clear the columns
     service.spreadsheets().batchUpdate(spreadsheetId = spreadsheetId, body=body).execute()
     
-    resp = update_sheet_with_df(df, sheet_name = sheet_name, spreadsheetId = spreadsheetId, header=header)
+    resp = update_tab_with_df(df, sheet_name = sheet_name, spreadsheetId = spreadsheetId, header=header)
     
     return resp
 
