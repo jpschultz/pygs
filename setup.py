@@ -7,12 +7,12 @@ packages = [
 
 install_requires = [
     'google-api-python-client>=1.6.2',
-    'pandas>=0.20.3'
+    'pandas>=0.20.1'
 ]
 
 long_desc = """This allows a user to send a dataframe to a Google Sheet"""
 
-version = '0.3'
+version = '0.4'
 
 setup(
     name="pygs",
