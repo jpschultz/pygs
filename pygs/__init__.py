@@ -217,6 +217,9 @@ def update_tab_with_df(df, sheet_name, spreadsheetId, header=True):
     
     current_state = service.spreadsheets().get(spreadsheetId = spreadsheetId).execute()
     
+    current_cols = 26
+    current_rows = 1000
+
     for sheet in current_state['sheets']:
         if sheet['properties']['title'] == sheet_name:
             current_cols = sheet['properties']['gridProperties']['columnCount']
