@@ -347,4 +347,18 @@ def create_tab_from_df(df, sheet_name, spreadsheetId, header=True):
     
     return resp
 
+def read_google_sheet(spreadsheetId = None, sheet_name = None):
+    if not spreadsheetId:
+        raise ValueError('Please specify a spreadsheetId.')
+
+    service = initService._getService()
+
+    #if the sheet name isn't specified, use the first one we find
+    if not sheet_name:
+        current_state = service.spreadsheets().get(spreadsheetId = spreadsheetId).execute()
+        sheet_name = current_state['sheets'][0]['properties']['title']
+    
+    response = service.spreadsheets().values().get(spreadsheetId = spreadsheetId, range=sheet_name).execute()
+    return pd.DataFrame(response['values'][1:len(response['values'])], columns=response['values'][0])
+
 initialize_service._initializeService(initializing=True)
