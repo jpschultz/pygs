@@ -2,7 +2,7 @@
 
 __author__ = "JP Schultz jp.schultz@gmail.com"
 __license__ = "MIT"
-__version__ = 0.5
+__version__ = 0.6
 
 
 import pandas as pd
@@ -122,8 +122,9 @@ def create_spreadsheet_from_df(df, sheet_name = None, document_name = None, head
     if total_cells > 2000000:
         raise ValueError('There are more than 2 million cells in this dataframe which cannot be loaded into Google Sheets.')
     
-    #Fills NA with empty strings to send to google sheets
-    df = df.fillna('').astype(str)
+    #clean/prep the dataframe to go to google sheets
+    df = pytools._cleanDF(df)
+    
 
     if document_name == None:
         document_name = 'Untitled spreadsheet'
@@ -194,8 +195,8 @@ def update_sheet_with_df(df, sheet_name, spreadsheetId, header=True):
     if not spreadsheetId:
         raise ValueError('Please specify a spreadsheetId.')
     
-    #Fills NA with empty strings to send to google sheets
-    df = df.fillna('').astype(str)
+    #clean/prep the dataframe to go to google sheets
+    df = pytools._cleanDF(df)
 
     if header:
         paste_data = [df.columns.tolist()] + df.as_matrix().tolist()
@@ -315,8 +316,8 @@ def create_tab_from_df(df, sheet_name, spreadsheetId, header=True):
     if not spreadsheetId:
         raise ValueError('Please specify a spreadsheetId.')
     
-    #Fills NA with empty strings to send to google sheets
-    df = df.fillna('').astype(str)
+    #clean/prep the dataframe to go to google sheets
+    df = pytools._cleanDF(df)
 
     if header:
         paste_data = [df.columns.tolist()] + df.as_matrix().tolist()

@@ -41,3 +41,15 @@ def _getEndCol(two_dim_array):
         second_letter = lookup_dict[array_length%26]
     
     return first_letter + second_letter
+
+def _cleanDF(df):
+    #fill any NA's
+    df = df.fillna('')
+    #try to encode it as a string, if all else fails, do utf-8
+    #TODO - check how utf-8 handles datetimes
+    try:
+        df = df.astype(str)
+    except UnicodeEncodeError:
+        for col in df.columns:
+            df[col] = df[col].apply(lambda x: x.encode('utf-8'))
+    return df
