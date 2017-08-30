@@ -43,6 +43,13 @@ def _getEndCol(two_dim_array):
     return first_letter + second_letter
 
 def _cleanDF(df):
+    #handles converting strings to unicode or int/floats to strings
+    def convertCell(cellVal):
+    try:
+        return str(cellVal)
+    except UnicodeEncodeError:
+        return cellVal.encode('utf-8').strip()
+    
     #fill any NA's
     df = df.fillna('')
     #try to encode it as a string, if all else fails, do utf-8
@@ -51,5 +58,5 @@ def _cleanDF(df):
         df = df.astype(str)
     except UnicodeEncodeError:
         for col in df.columns:
-            df[col] = df[col].apply(lambda x: str(x).encode('utf-8'))
+            df[col] = df[col].apply(lambda x: convertCell(x))
     return df
