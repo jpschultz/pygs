@@ -2,7 +2,7 @@
 
 __author__ = "JP Schultz jp.schultz@gmail.com"
 __license__ = "MIT"
-__version__ = 0.7
+__version__ = 0.7.1
 
 
 import pandas as pd
@@ -348,6 +348,23 @@ def create_tab_from_df(df, sheet_name, spreadsheetId, header=True):
     return resp
 
 def read_google_sheet(spreadsheetId = None, sheet_name = None):
+    """
+    This will 
+    
+    Parameters
+    ----------
+    spreadsheetId : str, required
+        The ID of the spreadsheet to read from
+    
+    sheet_name : str, optional
+        This is the name of the tab/sheet you would like to read from. Without it, it defaults to
+        the first sheet in the spreadsheet.
+        
+    
+    Returns
+    -------
+    Returns a Pandas Dataframe of the sheet with cells formatted as strings.
+    """
     if not spreadsheetId:
         raise ValueError('Please specify a spreadsheetId.')
 
