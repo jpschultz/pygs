@@ -51,5 +51,5 @@ def _cleanDF(df):
         df = df.astype(str)
     except UnicodeEncodeError:
         for col in df.columns:
-            df[col] = df[col].apply(lambda x: x.encode('utf-8'))
+            df[col] = df[col].apply(lambda x: str(x).encode('utf-8'))
     return df
