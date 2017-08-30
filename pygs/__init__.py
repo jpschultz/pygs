@@ -13,7 +13,7 @@ from apiclient import discovery
 from oauth2client import client
 from oauth2client import tools
 from oauth2client.file import Storage
-import pygs_tools as tools
+import pygs_tools as pytools
 import initialize_service as initService
 
 
@@ -130,7 +130,7 @@ def create_spreadsheet_from_df(df, sheet_name = None, document_name = None, head
     if sheet_name == None:
         sheet_name = 'Sheet1'
     
-    last_col = tools._getEndCol(paste_data)
+    last_col = pytools._getEndCol(paste_data)
     last_row = str(len(paste_data))
     
     a1notation = sheet_name + '!A1:' + last_col + last_row
@@ -167,9 +167,9 @@ def create_spreadsheet_from_df(df, sheet_name = None, document_name = None, head
     return ret_val
 
 
-def update_tab_with_df(df, sheet_name, spreadsheetId, header=True):
+def update_sheet_with_df(df, sheet_name, spreadsheetId, header=True):
     """
-    Given a Pandas DataFrame (df), spreadsheetId and sheet name, this will empty the sheet and paste the dataframe into it.
+    Given a Pandas DataFrame (df), spreadsheetId and sheet_name, this will empty the sheet and paste the dataframe into it.
     
     Parameters
     ----------
@@ -208,7 +208,7 @@ def update_tab_with_df(df, sheet_name, spreadsheetId, header=True):
     if total_cells > 2000000:
         raise ValueError('There are more than 2 million cells in this dataframe which cannot be loaded into Google Sheets.')
     
-    last_col = tools._getEndCol(paste_data)
+    last_col = pytools._getEndCol(paste_data)
     last_row = str(len(paste_data))
     
     a1notation = sheet_name + '!A1:' + last_col + last_row
@@ -219,15 +219,20 @@ def update_tab_with_df(df, sheet_name, spreadsheetId, header=True):
     
     current_cols = 26
     current_rows = 1000
-
+    
+    found = False
     for sheet in current_state['sheets']:
         if sheet['properties']['title'] == sheet_name:
             current_cols = sheet['properties']['gridProperties']['columnCount']
             current_rows = sheet['properties']['gridProperties']['rowCount']
             sheet_id = sheet['properties']['sheetId']
+            found = True
+
+    if not found:
+        raise ValueError("Unable to find '{}' in the spreadsheet. Please check the sheet name again.".format(sheet_name))
 
     #clear the data from the sheet
-    clear_range_end_col = tools._getEndCol([range(current_cols)])
+    clear_range_end_col = pytools._getEndCol([range(current_cols)])
     service.spreadsheets().values().clear(spreadsheetId=spreadsheetId, range=sheet_name+"!A1:" + clear_range_end_col + str(current_rows), body={}).execute()
 
     #remove extra columns so we can fit the new DF
@@ -321,7 +326,7 @@ def create_tab_from_df(df, sheet_name, spreadsheetId, header=True):
     else:
         paste_data = df.as_matrix().tolist()
     
-    sheet_name = tools._cleanSheetName(sheet_name, spreadsheetId)
+    sheet_name = pytools._cleanSheetName(sheet_name, spreadsheetId)
     
     body = {
     "requests":[{        

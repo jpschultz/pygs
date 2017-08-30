@@ -7,6 +7,7 @@ from oauth2client import client
 from oauth2client import tools
 from oauth2client.file import Storage
 
+
 service_dict = {
     'service': None
 }
@@ -16,18 +17,14 @@ def _initializeService(initializing=None):
     APPLICATION_NAME = 'PYGS - Python for Google Sheets'
     
     home_dir = os.path.expanduser('~')
-    
+    credential_dir = os.path.join(home_dir, '.credentials')
     client_secret_dir = os.path.join(home_dir, 'clientsecrets')
     
     if not os.path.exists(client_secret_dir):
         os.makedirs(client_secret_dir)
         
-
     CLIENT_SECRET_FILE = os.path.join(client_secret_dir, 'client_secret.json')
 
-   
-    credential_dir = os.path.join(home_dir, '.credentials')
-    
     
     if not os.path.exists(credential_dir):
         os.makedirs(credential_dir)

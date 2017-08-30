@@ -6,7 +6,7 @@ def _cleanSheetName(sheet_name, spreadsheetId):
     current_state = service.spreadsheets().get(spreadsheetId = spreadsheetId).execute()
     tot_names = []
     for sheet in current_state['sheets']:
-        if sheet_name in sheet['properties']['title']:
+        if sheet_name.lower() == sheet['properties']['title'].lower():
             try:
                 name_split = sheet['properties']['title'].split(sheet_name + "_")
                 if len(name_split) > 1:
