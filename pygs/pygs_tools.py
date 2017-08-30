@@ -45,10 +45,10 @@ def _getEndCol(two_dim_array):
 def _cleanDF(df):
     #handles converting strings to unicode or int/floats to strings
     def convertCell(cellVal):
-    try:
-        return str(cellVal)
-    except UnicodeEncodeError:
-        return cellVal.encode('utf-8').strip()
+        try:
+            return str(cellVal)
+        except UnicodeEncodeError:
+            return cellVal.encode('utf-8').strip()
     
     #fill any NA's
     df = df.fillna('')
