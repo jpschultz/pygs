@@ -163,7 +163,6 @@ def create_spreadsheet_from_df(df, sheet_name = None, document_name = None, head
         'spreadsheetId': str(response['spreadsheetId']),
         'spreadsheetUrl': str(new_sheet['spreadsheetUrl'])  
     }
-    print ret_val
     return ret_val
 
 
@@ -285,8 +284,6 @@ def update_sheet_with_df(df, sheet_name, spreadsheetId, header=True):
         'spreadsheetUrl': 'https://docs.google.com/spreadsheets/d/' + str(response['spreadsheetId'])  
     }
         
-    print ret_val
-    
     return ret_val
 
 
