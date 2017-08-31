@@ -2,7 +2,6 @@
 
 __author__ = "JP Schultz jp.schultz@gmail.com"
 __license__ = "MIT"
-__version__ = 0.7.1
 
 
 import pandas as pd
