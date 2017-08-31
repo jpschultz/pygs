@@ -6,13 +6,16 @@ from apiclient import discovery
 from oauth2client import client
 from oauth2client import tools
 from oauth2client.file import Storage
+import datetime
 
 
 service_dict = {
-    'service': None
+    'service': None,
+    'last_updated': None
 }
 
 def _initializeService(initializing=None):
+    global service_dict
     SCOPES = 'https://www.googleapis.com/auth/spreadsheets'
     APPLICATION_NAME = 'PYGS - Python for Google Sheets'
     
@@ -48,12 +51,19 @@ def _initializeService(initializing=None):
     
     if initializing:
         service_dict['service'] = discovery.build('sheets', 'v4', http=http, discoveryServiceUrl=discoveryUrl)
+        service_dict['last_updated'] = datetime.datetime.now()
     else:
         return discovery.build('sheets', 'v4', http=http, discoveryServiceUrl=discoveryUrl)
     
 
 def _getService():
-    if service_dict['service'] == None:
+    global service_dict
+    #get a new service every 30 minutes
+    outdated = False
+    if datetime.datetime.now() > service_dict['last_updated'] +  datetime.timedelta(minutes=1):
+        outdated = True
+
+    if service_dict['service'] == None or outdated:
         service_dict['service'] = _initializeService()
         return service_dict['service']
     else:
