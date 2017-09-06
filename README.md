@@ -26,7 +26,7 @@ You will need to setup a API Authentication Token with Google Sheets API and sto
 
 Congrats! The setup is (mostly) over. The rest will be automated when you import the module.
 
-* Please note, if you are running this on a headless machine, you will need to run the import first on a desktop where you can access a browswer so you can finish the authentication. When you run 'import pygs' for the first time, it will open a browser window with to authorize the script. This only happens once and when the authorization is complete, it will create a folder called '.credentials' in your home directory where it will store the authentication json token. Copy the '.credentials' folder to the home directory of the headless machine and you should be able to import the module without any issues.
+* Please note, if you are running this on a headless machine, you will need to run the import first on a desktop where you can access a browser so you can finish the authentication. When you run 'import pygs' for the first time, it will open a browser window to authorize the script. This only happens once and when the authorization is complete, it will create a folder called '.credentials' in your home directory where it will store the authentication json token. Copy the '.credentials' folder to the home directory of the headless machine and you should be able to import the module without any issues.
 
 
 ### Installing
@@ -55,7 +55,7 @@ pygs.create_spreadsheet_from_df(df, sheet_name='First Tab Name', document_name='
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE.md) file for details
 
 ## Acknowledgments
 
