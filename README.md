@@ -55,7 +55,7 @@ pygs.create_spreadsheet_from_df(df, sheet_name='First Tab Name', document_name='
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
 
 ## Acknowledgments
 
