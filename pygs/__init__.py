@@ -42,39 +42,27 @@ def create_empty_spreadsheet(document_name = None, sheet_name = None, **kwargs):
     
     if document_name == None:
         document_name = 'Untitled spreadsheet'
+
     if sheet_name == None:
-        sheets_info = [
-                {
-                    'properties': {
-                     'gridProperties':{
-                        'columnCount': cols,
-                        'rowCount': rows
-                        },
-                        'index': 0,
-                        'sheetId': 0,
-                        'sheetType': 'GRID',
-                        'title': 'Sheet1'
-                    }
+        sheet_name = 'Sheet1'
+
+    sheets_info = [
+            {
+                'properties': {
+                 'gridProperties':{
+                    'columnCount': cols,
+                    'rowCount': rows
+                    },
+                    'index': 0,
+                    'sheetId': 0,
+                    'sheetType': 'GRID',
+                    'title': 'Sheet1'
                 }
-            ]
-    else:
-        sheets_info = [
-                {
-                    'properties': {
-                     'gridProperties':{
-                        'columnCount': cols,
-                        'rowCount': rows
-                        },
-                        'index': 0,
-                        'sheetId': 0,
-                        'sheetType': 'GRID',
-                        'title': sheet_name
-                    }
-                }
-            ]
+            }
+        ]
     
     if document_name == None:
-        response = service.spreadsheets().create(body={}).execute()
+        response = service.spreadsheets().create(body={'sheets':sheet_info}).execute()
     else:
         response = service.spreadsheets().create(body={'properties':{'title':document_name}, 'sheets':sheets_info}).execute()   
     ret_val = {
@@ -124,7 +112,6 @@ def create_spreadsheet_from_df(df, sheet_name = None, document_name = None, head
     #clean/prep the dataframe to go to google sheets
     df = pytools._cleanDF(df)
     
-
     if document_name == None:
         document_name = 'Untitled spreadsheet'
     if sheet_name == None:
@@ -145,8 +132,6 @@ def create_spreadsheet_from_df(df, sheet_name = None, document_name = None, head
     
     service = initService._getService()
     
-    
-    
     new_sheet = create_empty_spreadsheet(document_name = document_name, sheet_name=sheet_name, cols=cols, rows=rows)
     new_sheet_id = new_sheet['spreadsheetId']
     
@@ -163,6 +148,7 @@ def create_spreadsheet_from_df(df, sheet_name = None, document_name = None, head
         'spreadsheetId': str(response['spreadsheetId']),
         'spreadsheetUrl': str(new_sheet['spreadsheetUrl'])  
     }
+
     return ret_val
 
 
@@ -226,6 +212,7 @@ def update_sheet_with_df(df, sheet_name, spreadsheetId, header=True):
             current_rows = sheet['properties']['gridProperties']['rowCount']
             sheet_id = sheet['properties']['sheetId']
             found = True
+            break
 
     if not found:
         raise ValueError("Unable to find '{}' in the spreadsheet. Please check the sheet name again.".format(sheet_name))
