@@ -329,7 +329,7 @@ def create_tab_from_df(df, sheet_name, spreadsheetId, header=True):
     #clear the columns
     service.spreadsheets().batchUpdate(spreadsheetId = spreadsheetId, body=body).execute()
     
-    resp = update_tab_with_df(df, sheet_name = sheet_name, spreadsheetId = spreadsheetId, header=header)
+    resp = update_sheet_with_df(df, sheet_name = sheet_name, spreadsheetId = spreadsheetId, header=header)
     
     return resp
 
