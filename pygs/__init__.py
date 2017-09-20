@@ -56,7 +56,7 @@ def create_empty_spreadsheet(document_name = None, sheet_name = None, **kwargs):
                     'index': 0,
                     'sheetId': 0,
                     'sheetType': 'GRID',
-                    'title': 'Sheet1'
+                    'title': sheet_name
                 }
             }
         ]
