@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 import string
 import initialize_service as initService
+import pandas as pd
+from numpy import nan
+
 def _cleanSheetName(sheet_name, spreadsheetId):
     service = initService._getService()
     current_state = service.spreadsheets().get(spreadsheetId = spreadsheetId).execute()
@@ -49,7 +52,6 @@ def _cleanDF(df):
             return str(cellVal)
         except UnicodeEncodeError:
             return cellVal.encode('utf-8').strip()
-    
     #fill any NA's
     df = df.fillna('')
     #try to encode it as a string, if all else fails, do utf-8
@@ -60,3 +62,27 @@ def _cleanDF(df):
         for col in df.columns:
             df[col] = df[col].apply(lambda x: convertCell(x))
     return df
+
+def _fixResponse(response):
+    #return response
+    if len(response['values']) > 1:
+        #setup the dataframe with no headers
+        df = pd.DataFrame(response['values'][1:]).fillna(value = nan).fillna('')
+        #get the width of the DF to see if we need to add/remove columns
+        width = df.shape[1]
+        header = response['values'][0]
+        #if there are more headers then there are columns, just make the columns empty
+        if len(header) > width:
+            df.columns = header[:width]
+            for col in header[width:]:
+                df[col] = ''
+            #df = pd.concat([df,pd.DataFrame(columns=header[width:])]).fillna('')
+            return df
+        else:
+            #if the body is bigger than the header, adjust accordingly:
+            df.columns = [x for x in header] + ["Unnamed Sheet Col " + str(x) for x in range(1, df.shape[1] - len(header) + 1) if x >= 0]
+            df = df.fillna('')
+            return df
+    #if we only have a header row, just make the empty DF
+    if len(response['values']) == 1:
+        return pd.DataFrame(columns=response['values'][0])

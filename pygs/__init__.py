@@ -276,7 +276,8 @@ def update_sheet_with_df(df, sheet_name, spreadsheetId, header=True):
 
 def create_tab_from_df(df, sheet_name, spreadsheetId, header=True):
     """
-    Given a Pandas DataFrame (df), spreadsheetId and sheet name, this will empty the sheet and paste the dataframe into it.
+    Given a Pandas DataFrame (df), spreadsheetId and sheet name, this will create a new tab in the spreadsheet
+    with the given data.
     
     Parameters
     ----------
@@ -326,7 +327,7 @@ def create_tab_from_df(df, sheet_name, spreadsheetId, header=True):
         }]
     }
     service = initService._getService()
-    #clear the columns
+    #create the empty sheet
     service.spreadsheets().batchUpdate(spreadsheetId = spreadsheetId, body=body).execute()
     
     resp = update_sheet_with_df(df, sheet_name = sheet_name, spreadsheetId = spreadsheetId, header=header)
@@ -362,6 +363,6 @@ def read_google_sheet(spreadsheetId = None, sheet_name = None):
         sheet_name = current_state['sheets'][0]['properties']['title']
     
     response = service.spreadsheets().values().get(spreadsheetId = spreadsheetId, range=sheet_name).execute()
-    return pd.DataFrame(response['values'][1:len(response['values'])], columns=response['values'][0])
+    return pytools._fixResponse(response) 
 
 initialize_service._initializeService(initializing=True)
