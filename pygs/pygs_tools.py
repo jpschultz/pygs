@@ -59,8 +59,12 @@ def _cleanDF(df):
     try:
         df = df.astype(str)
     except UnicodeEncodeError:
-        for col in df.columns:
-            df[col] = df[col].apply(lambda x: convertCell(x))
+        try:
+            for col in df.columns:
+                df[col] = df[col].apply(lambda x: convertCell(x))
+        except UnicodeEncodeError:
+            for col in df.columns:
+                df[col] = df[col].values.astype('unicode')
     return df
 
 def _fixResponse(response):
