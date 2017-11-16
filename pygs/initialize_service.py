@@ -61,7 +61,7 @@ def initializeService(initializing=None):
 def getService():
     global service_dict
     # get a new service every 30 minutes
-    outdate = datetime.datetime.now() > service_dict[
+    outdated = datetime.datetime.now() > service_dict[
         'last_updated'] + datetime.timedelta(minutes=30)
 
     if service_dict['service'] == None or outdated:
