@@ -49,15 +49,13 @@ def initializeService(initializing=None):
         print('Storing credentials to ' + credential_path)
 
     http = credentials.authorize(httplib2.Http())
-    discoveryUrl = (
-        'https://fusiontables.googleapis.com/$discovery/rest?version=v4')
+    discoveryUrl = ('https://sheets.googleapis.com/$discovery/rest?version=v4')
 
     if initializing:
-        service_dict['service'] = discovery.build(
-            'fusiontables', 'v4', http=http, discoveryServiceUrl=discoveryUrl)
+        service_dict['service'] = discovery.build('sheets', 'v4', http=http, discoveryServiceUrl=discoveryUrl)
         service_dict['last_updated'] = datetime.datetime.now()
     else:
-        return discovery.build('fusiontables', 'v4', http=http, discoveryServiceUrl=discoveryUrl)
+        return discovery.build('sheets', 'v4', http=http, discoveryServiceUrl=discoveryUrl)
 
 
 def getService():
