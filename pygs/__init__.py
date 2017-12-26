@@ -90,7 +90,10 @@ def get_all_sheet_names(spreadsheetId):
     -------
     Returns a Python list containing all the sheet names
     """
-    return pytools.getAllSheetNames(spreadsheetId)
+
+    sheet_names = pygs.getAllSheetNames(spreadsheetId)
+
+    return sheet_names
 
 
 def create_spreadsheet_from_df(df, sheet_name=None, document_name=None, header=True):
