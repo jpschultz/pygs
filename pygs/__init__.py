@@ -91,7 +91,7 @@ def get_all_sheet_names(spreadsheetId):
     Returns a Python list containing all the sheet names
     """
 
-    sheet_names = pygs.getAllSheetNames(spreadsheetId)
+    sheet_names = pytools.getAllSheetNames(spreadsheetId)
 
     return sheet_names
 
