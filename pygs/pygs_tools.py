@@ -4,6 +4,16 @@ import initialize_service as initService
 import pandas as pd
 from numpy import nan
 
+def getAllSheetNames(spreadsheetId):
+    all_sheets = []
+    service = initService.getService()
+    current_state = service.spreadsheets().get(
+        spreadsheetId=spreadsheetId).execute()
+    
+    for sheet in current_state['sheets']:
+        all_sheets.append(sheet['properties']['title'])
+
+    return all_sheets
 
 def cleanSheetName(sheet_name, spreadsheetId):
     service = initService.getService()

@@ -74,6 +74,25 @@ def create_empty_spreadsheet(document_name=None, sheet_name=None, **kwargs):
     return ret_val
 
 
+def get_all_sheet_names(spreadsheetId):
+    """
+    This will return a list of all of the sheet names.
+
+    Parameters
+    ----------
+
+    spreadsheetId : str
+        The ID of the Google Sheet you wish to get the Sheet
+        names for
+
+
+    Returns
+    -------
+    Returns a Python list containing all the sheet names
+    """
+    return pytools.getAllSheetNames(spreadsheetId)
+
+
 def create_spreadsheet_from_df(df, sheet_name=None, document_name=None, header=True):
     """
     Given a Pandas DataFrame (df), this will create a google sheet
