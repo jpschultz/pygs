@@ -88,6 +88,12 @@ def cleanDF(df):
 
 def fixResponse(response):
     # return response
+
+    #If values aren't there it's an empty dataframe
+    if 'values' not in response:
+        return pd.DataFrame()
+
+    #If there's more than just the header row, return the values
     if len(response['values']) > 1:
         # setup the dataframe with no headers
         df = pd.DataFrame(response['values'][1:]).fillna(value=nan).fillna('')
@@ -100,7 +106,6 @@ def fixResponse(response):
             df.columns = header[:width]
             for col in header[width:]:
                 df[col] = ''
-            #df = pd.concat([df,pd.DataFrame(columns=header[width:])]).fillna('')
             return df
 
         # if the body is bigger than the header, adjust accordingly:
