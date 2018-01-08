@@ -417,4 +417,34 @@ def read_google_sheet(spreadsheetId=None, sheet_name=None):
         .get(spreadsheetId=spreadsheetId, range=sheet_name).execute()
     return pytools.fixResponse(response)
 
+def get_total_cells(spreadsheetId):
+    """
+    Given a specific spreadsheetId, this will return a count of the number of
+    cells in the spreadsheet. Since Google Sheets has a limit, this can
+    be used to determine if you will go over it by adding more.
+
+    Parameters
+    ----------
+    spreadsheetId : str, required
+        The ID of the spreadsheet to read from
+
+
+    Returns
+    -------
+    Returns int representing the number of cells in the sheet.
+    """
+    if not spreadsheetId:
+        raise ValueError('Please specify a spreadsheetId.')
+
+    service = initService.getService()
+    sheet_info = service.spreadsheets().get(spreadsheetId=spreadsheetId).execute()
+
+    total_cells = 0
+    for sheet in sheet_info['sheets']:
+        columns = sheet['properties']['gridProperties']['columnCount']
+        rows = sheet['properties']['gridProperties']['rowCount']
+        total_cells += columns * rows
+
+    return total_cells
+
 initService.initializeService(initializing=True)
