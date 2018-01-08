@@ -52,10 +52,10 @@ def initializeService(initializing=None):
     discoveryUrl = ('https://sheets.googleapis.com/$discovery/rest?version=v4')
 
     if initializing:
-        service_dict['service'] = discovery.build('sheets', 'v4', http=http, discoveryServiceUrl=discoveryUrl)
+        service_dict['service'] = discovery.build('sheets', 'v4', http=http, cache_discovery=False, discoveryServiceUrl=discoveryUrl)
         service_dict['last_updated'] = datetime.datetime.now()
     else:
-        return discovery.build('sheets', 'v4', http=http, discoveryServiceUrl=discoveryUrl)
+        return discovery.build('sheets', 'v4', http=http, cache_discovery=False, discoveryServiceUrl=discoveryUrl)
 
 
 def getService():
