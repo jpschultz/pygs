@@ -449,4 +449,4 @@ def get_total_cells(spreadsheetId):
     return total_cells
 
 
-init_service.initializeService(initializing=True)
+init_service.initialize_service(initializing=True)
