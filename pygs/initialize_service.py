@@ -15,7 +15,7 @@ service_dict = {
 }
 
 
-def initializeService(initializing=None):
+def initialize_service(initializing=None):
     global service_dict
     SCOPES = 'https://www.googleapis.com/auth/spreadsheets'
     APPLICATION_NAME = 'PYGS - Python for Google Sheets'
@@ -58,7 +58,7 @@ def initializeService(initializing=None):
         return discovery.build('sheets', 'v4', http=http, cache_discovery=False, discoveryServiceUrl=discoveryUrl)
 
 
-def getService():
+def get_service():
     global service_dict
     # get a new service every 30 minutes
     outdated = datetime.datetime.now() > service_dict[

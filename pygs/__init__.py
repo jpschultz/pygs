@@ -3,17 +3,8 @@
 __author__ = "JP Schultz jp.schultz@gmail.com"
 __license__ = "MIT"
 
-
-import os
-import string
-import pandas as pd
-import httplib2
-from apiclient import discovery
-from oauth2client import client
-from oauth2client import tools
-from oauth2client.file import Storage
 import pygs_tools as pytools
-import initialize_service as initService
+import initialize_service as init_service
 
 
 def create_empty_spreadsheet(document_name=None, sheet_name=None, **kwargs):
@@ -36,7 +27,7 @@ def create_empty_spreadsheet(document_name=None, sheet_name=None, **kwargs):
     -------
     Returns an object containing both the 'key' for the spreadsheet and the 'url'
     """
-    service = initService.getService()
+    service = init_service.get_service()
 
     cols = kwargs.pop('cols', 26)
     rows = kwargs.pop('rows', 1000)
@@ -125,19 +116,19 @@ def create_spreadsheet_from_df(df, sheet_name=None, document_name=None, header=T
     if df.empty:
         raise ValueError('Please pass in a dataframe with data.')
 
+    # clean/prep the dataframe to go to google sheets
+    df = pytools.cleanDF(df)
+
     if header:
         paste_data = [df.columns.tolist()] + df.as_matrix().tolist()
     else:
         paste_data = df.as_matrix().tolist()
 
-    total_cells = len(paste_data) * len(paste_data[0])
+    total_cells = df.size + len(paste_data[0])
 
     if total_cells > 2000000:
-        raise ValueError('There are more than 2 million cells in this dataframe \
-                          which cannot be loaded into Google Sheets.')
-
-    # clean/prep the dataframe to go to google sheets
-    df = pytools.cleanDF(df)
+        raise ValueError(
+            'There are more than 2 million cells in this dataframe which cannot be loaded into Google Sheets.')
 
     if document_name is None:
         document_name = 'Untitled spreadsheet'
@@ -156,7 +147,7 @@ def create_spreadsheet_from_df(df, sheet_name=None, document_name=None, header=T
         cols = 26
         rows = 1000
 
-    service = initService.getService()
+    service = init_service.get_service()
 
     new_sheet = create_empty_spreadsheet(document_name=document_name,
                                          sheet_name=sheet_name,
@@ -233,7 +224,7 @@ def update_sheet_with_df(df, sheet_name, spreadsheetId, header=True):
 
     a1notation = sheet_name + '!A1:' + last_col + last_row
 
-    service = initService.getService()
+    service = init_service.get_service()
 
     current_state = service.spreadsheets().get(
         spreadsheetId=spreadsheetId).execute()
@@ -258,8 +249,8 @@ def update_sheet_with_df(df, sheet_name, spreadsheetId, header=True):
     clear_range_end_col = pytools.getEndCol([range(current_cols)])
     service.spreadsheets().values().clear(spreadsheetId=spreadsheetId,
                                           range=sheet_name + "!A1:" +
-                                          clear_range_end_col +
-                                          str(current_rows),
+                                                clear_range_end_col +
+                                                str(current_rows),
                                           body={}).execute()
 
     # remove extra columns so we can fit the new DF
@@ -363,7 +354,7 @@ def create_tab_from_df(df, sheet_name, spreadsheetId, header=True):
             "addSheet": {
                 "properties": {
                     "title":
-                    sheet_name,
+                        sheet_name,
                     "gridProperties": {
                         "rowCount": len(paste_data),
                         "columnCount": len(paste_data[0])
@@ -372,7 +363,7 @@ def create_tab_from_df(df, sheet_name, spreadsheetId, header=True):
             }
         }]
     }
-    service = initService.getService()
+    service = init_service.get_service()
     # create the empty sheet
     service.spreadsheets().batchUpdate(
         spreadsheetId=spreadsheetId, body=body).execute()
@@ -405,7 +396,7 @@ def read_google_sheet(spreadsheetId=None, sheet_name=None):
     if not spreadsheetId:
         raise ValueError('Please specify a spreadsheetId.')
 
-    service = initService.getService()
+    service = init_service.get_service()
 
     # if the sheet name isn't specified, use the first one we find
     if not sheet_name:
@@ -413,9 +404,10 @@ def read_google_sheet(spreadsheetId=None, sheet_name=None):
             spreadsheetId=spreadsheetId).execute()
         sheet_name = current_state['sheets'][0]['properties']['title']
 
-    response = service.spreadsheets().values()\
+    response = service.spreadsheets().values() \
         .get(spreadsheetId=spreadsheetId, range=sheet_name).execute()
     return pytools.fixResponse(response)
+
 
 def get_total_cells(spreadsheetId):
     """
@@ -436,7 +428,7 @@ def get_total_cells(spreadsheetId):
     if not spreadsheetId:
         raise ValueError('Please specify a spreadsheetId.')
 
-    service = initService.getService()
+    service = init_service.get_service()
     sheet_info = service.spreadsheets().get(spreadsheetId=spreadsheetId).execute()
 
     total_cells = 0
@@ -447,4 +439,5 @@ def get_total_cells(spreadsheetId):
 
     return total_cells
 
-initService.initializeService(initializing=True)
+
+init_service.initializeService(initializing=True)
