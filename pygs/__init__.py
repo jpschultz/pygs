@@ -51,12 +51,8 @@ def create_empty_spreadsheet(document_name=None, sheet_name=None, **kwargs):
         }
     }]
 
-    if document_name is None:
-        response = service.spreadsheets().create(
-            body={'sheets': sheet_info}).execute()
-    else:
-        response = service.spreadsheets().create(body={'properties': {'title': document_name},
-                                                       'sheets': sheets_info}).execute()
+    response = service.spreadsheets().create(body={'properties': {'title': document_name},
+                                                   'sheets': sheets_info}).execute()
     ret_val = {
         'spreadsheetId': str(response['spreadsheetId']),
         'spreadsheetUrl': str(response['spreadsheetUrl'])
@@ -82,7 +78,7 @@ def get_all_sheet_names(spreadsheetId):
     Returns a Python list containing all the sheet names
     """
 
-    sheet_names = pytools.getAllSheetNames(spreadsheetId)
+    sheet_names = pytools.get_all_sheet_names(spreadsheetId)
 
     return sheet_names
 
@@ -213,7 +209,7 @@ def update_sheet_with_df(df, sheet_name, spreadsheetId, header=True):
     else:
         paste_data = df.as_matrix().tolist()
 
-    total_cells = len(paste_data) * len(paste_data[0])
+    total_cells = df.size + len(paste_data[0])
 
     if total_cells > 2000000:
         raise ValueError('There are more than 2 million cells in \
@@ -229,9 +225,6 @@ def update_sheet_with_df(df, sheet_name, spreadsheetId, header=True):
     current_state = service.spreadsheets().get(
         spreadsheetId=spreadsheetId).execute()
 
-    current_cols = 26
-    current_rows = 1000
-
     found = False
     for sheet in current_state['sheets']:
         if sheet['properties']['title'] == sheet_name:
@@ -242,28 +235,33 @@ def update_sheet_with_df(df, sheet_name, spreadsheetId, header=True):
             break
 
     if not found:
-        raise ValueError("Unable to find '{}' in the spreadsheet. \
-                        Please check the sheet name again.".format(sheet_name))
+        raise ValueError(
+            "Unable to find '{}' in the spreadsheet. Please check the sheet name again.".format(sheet_name))
 
     # clear the data from the sheet
     clear_range_end_col = pytools.getEndCol([range(current_cols)])
+
+    range_to_clear = "{}!A1:{}{}".format(sheet_name, clear_range_end_col, str(current_rows))
+
     service.spreadsheets().values().clear(spreadsheetId=spreadsheetId,
-                                          range=sheet_name + "!A1:" +
-                                                clear_range_end_col +
-                                                str(current_rows),
+                                          range=range_to_clear,
                                           body={}).execute()
 
     # remove extra columns so we can fit the new DF
+    # If the length of the incoming data multiplied by the number of columns there currently are would
+    # make the sheet more than 2000000, we need to remove any extra columns, so this deletes those columns
     if (len(paste_data) * current_cols) > 2000000:
+        range_dict = {
+            'sheetId': sheet_id,
+            'dimension': 'COLUMNS',
+            'startIndex': 1,
+            'endIndex': current_cols - 1
+        }
+        # request body based off of the dimensions above
         body = {
             "requests": [{
                 "deleteDimension": {
-                    "range": {
-                        'sheetId': sheet_id,
-                        'dimension': 'COLUMNS',
-                        'startIndex': 1,
-                        'endIndex': current_cols - 1
-                    }
+                    "range": range_dict
                 }
             }]
         }
@@ -271,16 +269,20 @@ def update_sheet_with_df(df, sheet_name, spreadsheetId, header=True):
         service.spreadsheets().batchUpdate(
             spreadsheetId=spreadsheetId, body=body).execute()
 
+    # If the incoming data is shorter than the current data, we need to clear the old data first, otherwise
+    # we can just paste over it
     if len(paste_data) < current_rows:
+        range_dict = {
+            'sheetId': sheet_id,
+            'dimension': 'ROWS',
+            'startIndex': len(paste_data) - 1,
+            'endIndex': current_rows
+        }
+        # request body based off of the dimensions above
         body = {
             "requests": [{
                 "deleteDimension": {
-                    "range": {
-                        'sheetId': sheet_id,
-                        'dimension': 'ROWS',
-                        'startIndex': len(paste_data) - 1,
-                        'endIndex': current_rows
-                    }
+                    "range": range_dict
                 }
             }]
         }
@@ -292,6 +294,7 @@ def update_sheet_with_df(df, sheet_name, spreadsheetId, header=True):
         "range": a1notation,
         "values": paste_data
     }
+
     response = service.spreadsheets().values().update(
         spreadsheetId=spreadsheetId,
         range=a1notation,
@@ -347,7 +350,13 @@ def create_tab_from_df(df, sheet_name, spreadsheetId, header=True):
     else:
         paste_data = df.as_matrix().tolist()
 
-    sheet_name = pytools.cleanSheetName(sheet_name, spreadsheetId)
+    total_cells = df.size + len(paste_data[0])
+
+    if total_cells > 2000000:
+        raise ValueError('There are more than 2 million cells in \
+                                this dataframe which cannot be loaded into Google Sheets.')
+
+    sheet_name = pytools.clean_sheet_name(sheet_name, spreadsheetId)
 
     body = {
         "requests": [{

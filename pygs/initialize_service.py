@@ -49,7 +49,7 @@ def initialize_service(initializing=None):
         print('Storing credentials to ' + credential_path)
 
     http = credentials.authorize(httplib2.Http())
-    discoveryUrl = ('https://sheets.googleapis.com/$discovery/rest?version=v4')
+    discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4'
 
     if initializing:
         service_dict['service'] = discovery.build('sheets', 'v4', http=http, cache_discovery=False, discoveryServiceUrl=discoveryUrl)
@@ -64,8 +64,8 @@ def get_service():
     outdated = datetime.datetime.now() > service_dict[
         'last_updated'] + datetime.timedelta(minutes=30)
 
-    if service_dict['service'] == None or outdated:
-        service_dict['service'] = initializeService()
+    if service_dict['service'] is None or outdated:
+        service_dict['service'] = initialize_service()
         return service_dict['service']
 
     return service_dict['service']

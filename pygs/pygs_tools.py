@@ -1,22 +1,24 @@
 #!/usr/bin/env python
 import string
-import initialize_service as initService
+import initialize_service as init_service
 import pandas as pd
 from numpy import nan
 
-def getAllSheetNames(spreadsheetId):
+
+def get_all_sheet_names(spreadsheetId):
     all_sheets = []
-    service = initService.getService()
+    service = init_service.get_service()
     current_state = service.spreadsheets().get(
         spreadsheetId=spreadsheetId).execute()
-    
+
     for sheet in current_state['sheets']:
         all_sheets.append(sheet['properties']['title'])
 
     return all_sheets
 
-def cleanSheetName(sheet_name, spreadsheetId):
-    service = initService.getService()
+
+def clean_sheet_name(sheet_name, spreadsheetId):
+    service = init_service.get_service()
     current_state = service.spreadsheets().get(
         spreadsheetId=spreadsheetId).execute()
     tot_names = []
@@ -70,6 +72,7 @@ def cleanDF(df):
             return str(cellVal)
         except UnicodeEncodeError:
             return cellVal.encode('utf-8').strip()
+
     # fill any NA's
     df = df.fillna('')
     # try to encode it as a string, if all else fails, do utf-8
@@ -89,11 +92,11 @@ def cleanDF(df):
 def fixResponse(response):
     # return response
 
-    #If values aren't there it's an empty dataframe
+    # If values aren't there it's an empty dataframe
     if 'values' not in response:
         return pd.DataFrame()
 
-    #If there's more than just the header row, return the values
+    # If there's more than just the header row, return the values
     if len(response['values']) > 1:
         # setup the dataframe with no headers
         df = pd.DataFrame(response['values'][1:]).fillna(value=nan).fillna('')
