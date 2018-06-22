@@ -7,7 +7,8 @@ packages = [
 
 install_requires = [
     'google-api-python-client>=1.6.2',
-    'pandas>=0.20.1'
+    'pandas>=0.20.1',
+    'oauth2client'
 ]
 
 long_desc = """This allows a user to send a dataframe to a Google Sheet"""
