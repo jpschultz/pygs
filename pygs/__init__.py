@@ -116,9 +116,9 @@ def create_spreadsheet_from_df(df, sheet_name=None, document_name=None, header=T
     df = pytools.cleanDF(df)
 
     if header:
-        paste_data = [df.columns.tolist()] + df.as_matrix().tolist()
+        paste_data = [df.columns.tolist()] + df.values.tolist()
     else:
-        paste_data = df.as_matrix().tolist()
+        paste_data = df.values.tolist()
 
     total_cells = df.size + len(paste_data[0])
 
@@ -205,9 +205,9 @@ def update_sheet_with_df(df, sheet_name, spreadsheetId, header=True):
     df = pytools.cleanDF(df)
 
     if header:
-        paste_data = [df.columns.tolist()] + df.as_matrix().tolist()
+        paste_data = [df.columns.tolist()] + df.values.tolist()
     else:
-        paste_data = df.as_matrix().tolist()
+        paste_data = df.values.tolist()
 
     total_cells = df.size + len(paste_data[0])
 
@@ -346,9 +346,9 @@ def create_tab_from_df(df, sheet_name, spreadsheetId, header=True):
     df = pytools.cleanDF(df)
 
     if header:
-        paste_data = [df.columns.tolist()] + df.as_matrix().tolist()
+        paste_data = [df.columns.tolist()] + df.values.tolist()
     else:
-        paste_data = df.as_matrix().tolist()
+        paste_data = df.values.tolist()
 
     total_cells = df.size + len(paste_data[0])
 
