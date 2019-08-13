@@ -1,8 +1,13 @@
 #!/usr/bin/env python
 import string
-import initialize_service as init_service
+#py3 compatible
+try:
+    import initialize_service as init_service
+except ImportError:
+    from . import initialize_service as init_service
 import pandas as pd
 from numpy import nan
+import math
 
 
 def get_all_sheet_names(spreadsheetId):
@@ -56,10 +61,10 @@ def getEndCol(two_dim_array):
 
     if array_length % 26 == 0:
         first_letter = lookup_dict[
-            (array_length % 26) + (array_length / 26) - 1]
+            (array_length % 26) + math.floor((array_length / 26)) - 1]
         second_letter = 'Z'
     else:
-        first_letter = lookup_dict[array_length / 26]
+        first_letter = lookup_dict[math.floor(array_length / 26)]
         second_letter = lookup_dict[array_length % 26]
 
     return first_letter + second_letter

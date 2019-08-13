@@ -3,8 +3,14 @@
 __author__ = "JP Schultz jp.schultz@gmail.com"
 __license__ = "MIT"
 
-import pygs_tools as pytools
-import initialize_service as init_service
+#py3 Compatability
+try:
+    import pygs_tools as pytools
+    import initialize_service as init_service
+except ImportError:
+    from . import pygs_tools as pytools
+    from . import initialize_service as init_service
+
 
 
 def create_empty_spreadsheet(document_name=None, sheet_name=None, **kwargs):

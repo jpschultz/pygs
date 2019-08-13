@@ -40,8 +40,8 @@ def initialize_service(initializing=None):
     credentials = store.get()
 
     if not credentials or credentials.invalid:
-        print "Credentials need to be created. Please allow access on the next screen\
-               and then re-run the command."
+        print("Credentials need to be created. Please allow access on the next screen\
+               and then re-run the command.")
         flow = client.flow_from_clientsecrets(CLIENT_SECRET_FILE, SCOPES)
         flow.user_agent = APPLICATION_NAME
         flags = tools.argparser.parse_args(args=[])
