@@ -1,8 +1,13 @@
 #!/usr/bin/env python
 import string
-import initialize_service as init_service
+#py3 compatible
+try:
+    import initialize_service as init_service
+except ImportError:
+    from . import initialize_service as init_service
 import pandas as pd
 from numpy import nan
+import math
 
 
 def get_all_sheet_names(spreadsheetId):
