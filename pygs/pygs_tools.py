@@ -61,10 +61,10 @@ def getEndCol(two_dim_array):
 
     if array_length % 26 == 0:
         first_letter = lookup_dict[
-            (array_length % 26) + (array_length / 26) - 1]
+            (array_length % 26) + math.floor((array_length / 26)) - 1]
         second_letter = 'Z'
     else:
-        first_letter = lookup_dict[array_length / 26]
+        first_letter = lookup_dict[math.floor(array_length / 26)]
         second_letter = lookup_dict[array_length % 26]
 
     return first_letter + second_letter
