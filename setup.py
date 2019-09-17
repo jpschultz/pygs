@@ -13,7 +13,7 @@ install_requires = [
 
 long_desc = """This allows a user to send a dataframe to a Google Sheet"""
 
-version = '1.0'
+version = '1.1'
 
 setup(
     name="pygs",

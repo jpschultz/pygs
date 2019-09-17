@@ -126,11 +126,11 @@ def create_spreadsheet_from_df(df, sheet_name=None, document_name=None, header=T
     else:
         paste_data = df.values.tolist()
 
-    total_cells = df.size + len(paste_data[0])
+    total_cells = df.size + (0 if not header else len(paste_data[0]))
 
-    if total_cells > 2000000:
+    if total_cells > 5000000:
         raise ValueError(
-            'There are more than 2 million cells in this dataframe which cannot be loaded into Google Sheets.')
+            'There are more than 5 million cells in this dataframe which cannot be loaded into Google Sheets.')
 
     if document_name is None:
         document_name = 'Untitled spreadsheet'
@@ -142,7 +142,7 @@ def create_spreadsheet_from_df(df, sheet_name=None, document_name=None, header=T
 
     a1notation = sheet_name + '!A1:' + last_col + last_row
 
-    if len(paste_data) * 26 > 2000000:
+    if len(paste_data) * 26 > 5000000:
         cols = len(paste_data[0])
         rows = len(paste_data)
     else:
@@ -215,10 +215,10 @@ def update_sheet_with_df(df, sheet_name, spreadsheetId, header=True):
     else:
         paste_data = df.values.tolist()
 
-    total_cells = df.size + len(paste_data[0])
+    total_cells = df.size + (0 if not header else len(paste_data[0]))
 
-    if total_cells > 2000000:
-        raise ValueError('There are more than 2 million cells in \
+    if total_cells > 5000000:
+        raise ValueError('There are more than 5 million cells in \
                         this dataframe which cannot be loaded into Google Sheets.')
 
     last_col = pytools.getEndCol(paste_data)
@@ -255,8 +255,8 @@ def update_sheet_with_df(df, sheet_name, spreadsheetId, header=True):
 
     # remove extra columns so we can fit the new DF
     # If the length of the incoming data multiplied by the number of columns there currently are would
-    # make the sheet more than 2000000, we need to remove any extra columns, so this deletes those columns
-    if (len(paste_data) * current_cols) > 2000000:
+    # make the sheet more than 5000000, we need to remove any extra columns, so this deletes those columns
+    if (len(paste_data) * current_cols) > 5000000:
         range_dict = {
             'sheetId': sheet_id,
             'dimension': 'COLUMNS',
@@ -356,10 +356,10 @@ def create_tab_from_df(df, sheet_name, spreadsheetId, header=True):
     else:
         paste_data = df.values.tolist()
 
-    total_cells = df.size + len(paste_data[0])
+    total_cells = df.size + (0 if not header else len(paste_data[0]))
 
-    if total_cells > 2000000:
-        raise ValueError('There are more than 2 million cells in \
+    if total_cells > 5000000:
+        raise ValueError('There are more than 5 million cells in \
                                 this dataframe which cannot be loaded into Google Sheets.')
 
     sheet_name = pytools.clean_sheet_name(sheet_name, spreadsheetId)
